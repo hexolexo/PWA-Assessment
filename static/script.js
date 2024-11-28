@@ -1,3 +1,17 @@
+// Service Worker Registration
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+                console.log('ServiceWorker registration successful');
+            })
+            .catch(err => {
+                console.log('ServiceWorker registration failed: ', err);
+            });
+    });
+} // I have no clue how this works
+
+
 // Cache DOM elements
 const searchBar = document.querySelector('.search-bar');
 const filterBtns = document.querySelectorAll('.filter-btn');
@@ -14,8 +28,7 @@ let cachedData = {
     rules: [],
     combat: [],
     conditions: [],
-    homebrew: [],
-    all: []
+    homebrew: []
 };
 
 // Event Listeners
