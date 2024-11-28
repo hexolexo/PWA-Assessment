@@ -2,9 +2,9 @@ const CACHE_NAME = 'dnd-reference-v1';
 const ASSETS = [
     '/',
     '/index.html',
-    '/script.js',
-    '/style.css',
-    '/manifest.json'
+    '/manifest.json',
+    '/icon-192x192.png',
+    '/icon-512x512.png'
 ];
 
 self.addEventListener('install', event => {

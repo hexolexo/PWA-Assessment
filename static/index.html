@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#7C3AED">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+    <title>DnD Quick Reference</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="offline-banner" class="offline-banner">
+        You are currently offline. Some features may be limited.
+    </div>
+    
+    <header>
+        <h1> DnD Quick Reference</h1>
+    </header>
+
+    <main>
+        <div class="search-container">
+            <input type="search" class="search-bar" placeholder="Search rules, conditions, actions...">
+            
+            <div class="filters">
+                <button class="filter-btn active" data-category="all">All</button>
+                <button class="filter-btn" data-category="combat">Combat</button>
+                <button class="filter-btn" data-category="exploration">Exploration</button>
+                <button class="filter-btn" data-category="social">Social</button>
+                <input type="button" class="create-rule" onclick="location.href='create.html';" value="Create New Rule" />
+            </div>
+
+            <div class="tab-container">
+                <button class="tab-btn" data-tab="all">All (slow)</button>
+                <button class="tab-btn" data-tab="rules">Basic Rules</button>
+                <button class="tab-btn" data-tab="combat">Combat</button>
+                <button class="tab-btn" data-tab="conditions">Conditions</button>
+                <button class="tab-btn" data-tab="homebrew">Homebrew</button>
+            </div>
+        </div>
+
+        <div class="content-grid" id="content">
+            <!-- Content will be dynamically populated -->
+        </div>
+
+    </main>
+    <script src="script.js"></script> 
+</body>
+</html>

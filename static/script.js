@@ -21,15 +21,14 @@ const offlineBanner = document.getElementById('offline-banner');
 const itemForm = document.getElementById('itemForm');
 
 // State management
-let currentTab = '';
+let currentTab = 'rules';
 let currentFilter = 'all';
 let searchQuery = '';
 let cachedData = {
     rules: [],
     combat: [],
     conditions: [],
-    homebrew: [],
-    all: []
+    homebrew: []
 };
 
 // Event Listeners
