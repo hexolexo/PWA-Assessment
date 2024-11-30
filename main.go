@@ -3,17 +3,14 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"strings"
 	_ "github.com/mattn/go-sqlite3"
 )
-
-// DB is our global database connection
+// Global DB
 var db *sql.DB
 
-// Item represents a rule, combat, condition, or homebrew item
 type Item struct {
     ID       int64    `json:"id"`
     Title    string   `json:"title"`
@@ -22,15 +19,12 @@ type Item struct {
     Tags     []string `json:"tags"`
 }
 
-// initDB initializes the database
 func initDB() error {
     var err error
     db, err = sql.Open("sqlite3", "./gamedata.db")
     if err != nil {
         return err
     }
-
-    // Create tables if they don't exist
     createTablesSQL := `
     CREATE TABLE IF NOT EXISTS rules (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -68,7 +62,7 @@ func initDB() error {
     return err
 }
 
-// handleCreateItem handles POST requests to create a new item
+// handleCreateItem handles POST requests and adds them to the DB
 func handleCreateItem(w http.ResponseWriter, r *http.Request, category string) {
     if r.Method != http.MethodPost {
         http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -81,7 +75,7 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request, category string) {
         return
     }
 
-    // Convert tags array to comma-separated string for storage
+    // Convert tags array to CSV 
     tagsStr := strings.Join(item.Tags, ",")
 
     // Insert item into database
@@ -105,7 +99,7 @@ func handleCreateItem(w http.ResponseWriter, r *http.Request, category string) {
     json.NewEncoder(w).Encode(item)
 }
 
-// handleGetItems handles GET requests to list items from a category
+// handleGetItems handles GET requests and returns a JSON string 
 func handleGetItems(w http.ResponseWriter, r *http.Request, category string) {
     if r.Method != http.MethodGet {
         http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -118,18 +112,16 @@ func handleGetItems(w http.ResponseWriter, r *http.Request, category string) {
         tables := []string{"rules", "combat", "conditions", "homebrew"} 
         query = "SELECT * FROM " + tables[0] + " "
 
-        for _, table := range tables[1:] { // Tables start at 1
+        for _, table := range tables[1:] { // "1:" makes the for loop start at 1 
             query += "UNION ALL"
             query += " SELECT * FROM " + table + " "
         }
-    fmt.Println(query)
     } else {
         // Query a specific category
         query = "SELECT * FROM " + category
     }
 
     rows, err := db.Query(query)
-    fmt.Println(rows)
 
     if err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -146,7 +138,7 @@ func handleGetItems(w http.ResponseWriter, r *http.Request, category string) {
             http.Error(w, err.Error(), http.StatusInternalServerError)
             return
         }
-        // Convert comma-separated tags string back to array
+        // Convert CSV string back to array
         item.Tags = strings.Split(tagsStr, ",")
         items = append(items, item)
     }
@@ -166,7 +158,7 @@ func main() {
     fs := http.FileServer(http.Dir("./static"))
     http.Handle("/", fs)
 
-    // API endpoints for each category
+    // GET API endpoints
     http.HandleFunc("/api/rules", func(w http.ResponseWriter, r *http.Request) {
         handleGetItems(w, r, "rules")
     })
@@ -183,7 +175,7 @@ func main() {
         handleGetItems(w, r, "all")
     })
 
-    // Create endpoints
+    // POST API endpoints 
     http.HandleFunc("/api/rules/create", func(w http.ResponseWriter, r *http.Request) {
         handleCreateItem(w, r, "rules")
     })
